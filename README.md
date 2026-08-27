@@ -21,13 +21,10 @@ source .venv/bin/activate
 python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
 python -m pip install -e connector
-cp .env.example .env
 ```
 
 Check the version inside the environment with `python --version`; it should
 show 3.10 or newer.
-
-If `.env` already exists, skip the `cp` command so you do not overwrite it.
 
 Open `.env` and add your keys:
 
