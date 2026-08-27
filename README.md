@@ -12,8 +12,7 @@ git clone --recurse-submodules https://github.com/iamvinai/Agentic_safety.git
 cd Agentic_safety
 ```
 
-The Radware connector needs Python 3.10 or newer. Python 3.11 is a safe
-choice on macOS:
+The Radware connector needs Python 3.10 or newer
 
 ```bash
 brew install python@3.11
