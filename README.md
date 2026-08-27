@@ -10,13 +10,23 @@ Run these commands from a normal project folder (not the macOS Trash):
 ```bash
 git clone --recurse-submodules https://github.com/iamvinai/Agentic_safety.git
 cd Agentic_safety
-python3 -m venv .venv
+```
+
+The Radware connector needs Python 3.10 or newer. Python 3.11 is a safe
+choice on macOS:
+
+```bash
+brew install python@3.11
+python3.11 -m venv .venv
 source .venv/bin/activate
-python3 -m pip install --upgrade pip
-python3 -m pip install -r requirements.txt
-python3 -m pip install -e connector
+python -m pip install --upgrade pip
+python -m pip install -r requirements.txt
+python -m pip install -e connector
 cp .env.example .env
 ```
+
+Check the version inside the environment with `python --version`; it should
+show 3.10 or newer.
 
 If `.env` already exists, skip the `cp` command so you do not overwrite it.
 
@@ -30,11 +40,10 @@ GOOGLE_API_KEY=...
 Then start the dashboard:
 
 ```bash
-python3 -m streamlit run app/dashboard.py
+python -m streamlit run app/dashboard.py
 ```
 
-Using `python3 -m streamlit` makes sure Streamlit runs from the virtual
-environment instead of the system Python.
+Using `python -m ...` makes sure the commands use the virtual environment.
 
 The app uses `gemini-3.6-flash` by default because that is the model tested with
 the current LangChain tool-calling path.
