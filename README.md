@@ -5,27 +5,36 @@ and Radware inspects the request, response, and tool calls out of path.
 
 ## Set it up
 
+Run these commands from a normal project folder (not the macOS Trash):
+
 ```bash
 git clone --recurse-submodules https://github.com/iamvinai/Agentic_safety.git
 cd Agentic_safety
 python3 -m venv .venv
 source .venv/bin/activate
-pip install -r requirements.txt
+python3 -m pip install --upgrade pip
+python3 -m pip install -r requirements.txt
+python3 -m pip install -e connector
 cp .env.example .env
 ```
 
-Add your keys to `.env`, then run:
+If `.env` already exists, skip the `cp` command so you do not overwrite it.
 
-```bash
-streamlit run app/dashboard.py
-```
-
-Add these values to `.env` first:
+Open `.env` and add your keys:
 
 ```text
 RADWARE_OUT_OF_PATH_API_KEY=...
 GOOGLE_API_KEY=...
 ```
+
+Then start the dashboard:
+
+```bash
+python3 -m streamlit run app/dashboard.py
+```
+
+Using `python3 -m streamlit` makes sure Streamlit runs from the virtual
+environment instead of the system Python.
 
 The app uses `gemini-3.6-flash` by default because that is the model tested with
 the current LangChain tool-calling path.
