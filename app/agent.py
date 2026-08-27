@@ -114,6 +114,7 @@ class SecureDesk:
                     user_identifier=active.radware_user_identifier,
                     model_to_use=active.gemini_model,
                     fail_mode=active.radware_fail_mode,
+                    timeout_s=active.radware_timeout_s,
                     client=self.radware_client,
                 )
             ],

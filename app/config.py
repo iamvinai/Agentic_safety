@@ -25,6 +25,7 @@ class Settings:
     gemini_model: str = DEFAULT_GEMINI_MODEL
     radware_user_identifier: str = "securedesk-gemini-demo"
     radware_fail_mode: str = "close"
+    radware_timeout_s: float = 90.0
 
     @property
     def live_ready(self) -> bool:
@@ -47,6 +48,9 @@ def get_settings() -> Settings:
     fail_mode = os.getenv("RADWARE_FAIL_MODE", "close").strip().lower()
     if fail_mode not in {"close", "open"}:
         raise ValueError("RADWARE_FAIL_MODE must be 'close' or 'open'")
+    timeout_s = float(os.getenv("RADWARE_TIMEOUT_S", "90"))
+    if timeout_s <= 0:
+        raise ValueError("RADWARE_TIMEOUT_S must be greater than zero")
     return Settings(
         radware_api_key=os.getenv("RADWARE_OUT_OF_PATH_API_KEY") or None,
         gemini_api_key=gemini_key or None,
@@ -57,4 +61,5 @@ def get_settings() -> Settings:
         ).strip()
         or "securedesk-gemini-demo",
         radware_fail_mode=fail_mode,
+        radware_timeout_s=timeout_s,
     )
