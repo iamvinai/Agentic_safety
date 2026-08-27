@@ -35,11 +35,7 @@ Open `.env` and add your keys:
 ```text
 RADWARE_OUT_OF_PATH_API_KEY=...
 GOOGLE_API_KEY=...
-RADWARE_TIMEOUT_S=90
-```
-
-`RADWARE_TIMEOUT_S` is optional. It gives the Radware inspection call more time
-on a slow connection; the app still fails closed if no verdict arrives.
+```.
 
 Then start the dashboard:
 
