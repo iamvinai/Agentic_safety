@@ -61,9 +61,4 @@ the current LangChain tool-calling path.
 - `app/ticketing.py` — two synthetic tickets and two safe tools.
 - `app/dashboard.py` — the Streamlit UI.
 - `connector/` — the Radware connector repository.
-
-Run the tests with:
-
-```bash
-.venv/bin/pytest -q
 ```
