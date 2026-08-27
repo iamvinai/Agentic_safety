@@ -53,9 +53,7 @@ the current LangChain tool-calling path.
 - Run the benign ticket and read the summary.
 - Select the poisoned ticket and enable red-team mode.
 - Confirm Radware blocks the simulated `shell_exec` call before it runs.
-
-The shell tool is only a recorder. It never runs a command or reads a real
-file.
+.
 
 ## Code layout
 
