@@ -62,6 +62,11 @@ st.markdown(
     .stage { padding: .8rem; border: 1px solid #d8e2e8; border-radius: 12px;
              background: #f8fbfc; min-height: 95px; }
     .stage b { color: #0e6d68; }
+    /* Keep Streamlit's app content, but hide its deploy and menu controls. */
+    [data-testid="stAppDeployButton"],
+    [data-testid="stToolbar"],
+    [data-testid="stMainMenu"],
+    #MainMenu { display: none !important; }
     </style>
     """,
     unsafe_allow_html=True,
