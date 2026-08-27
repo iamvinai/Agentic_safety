@@ -3,10 +3,20 @@
 SecureDesk is a small Python demo: Gemini handles synthetic support tickets,
 and Radware inspects the request, response, and tool calls out of path.
 
-## Run it
+## Set it up
 
 ```bash
+git clone --recurse-submodules https://github.com/iamvinai/Agentic_safety.git
+cd Agentic_safety
+python3 -m venv .venv
 source .venv/bin/activate
+pip install -r requirements.txt
+cp .env.example .env
+```
+
+Add your keys to `.env`, then run:
+
+```bash
 streamlit run app/dashboard.py
 ```
 
