@@ -149,13 +149,24 @@ if st.session_state.get("runs"):
     result = st.session_state.runs[0]
     st.subheader("Latest run")
     metric_cols = st.columns(4)
-    metric_cols[0].metric("Decision", "BLOCKED" if result.blocked else "ALLOWED")
+    metric_cols[0].metric(
+        "Radware decision", "BLOCKED" if result.blocked else "ALLOWED"
+    )
     metric_cols[1].metric("Event IDs", len(result.event_ids))
     metric_cols[2].metric("Planned tools", len(result.planned_tool_calls))
     metric_cols[3].metric("Executed tools", len(result.executed_tools))
+    st.caption(
+        "An ALLOWED Radware decision does not force Gemini to comply; the model "
+        "can still refuse an unsafe request."
+    )
 
     for message in result.messages:
-        with st.chat_message("assistant" if message["role"] == "AIMessage" else "tool"):
+        chat_role = {
+            "HumanMessage": "user",
+            "AIMessage": "assistant",
+            "ToolMessage": "tool",
+        }.get(message["role"], "tool")
+        with st.chat_message(chat_role):
             if message["text"]:
                 st.write(message["text"])
             if message["tool_calls"]:
