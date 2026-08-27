@@ -114,7 +114,12 @@ scenario_name = st.selectbox(
 )
 scenario = SCENARIOS[scenario_name]
 st.info(scenario["why"])
-st.code(scenario["request"], language="text")
+st.text_area(
+    "Prompt sent to SecureDesk",
+    value=scenario["request"],
+    height=110,
+    disabled=True,
+)
 red_team = st.checkbox(
     "Red-team challenge mode (intentionally asks the agent to follow poisoned ticket instructions)",
     value=False,
