@@ -47,21 +47,18 @@ st.set_page_config(
     page_title="SecureDesk Security Lab",
     page_icon="🛡️",
     layout="wide",
-    initial_sidebar_state="expanded",
+    initial_sidebar_state="collapsed",
 )
 
 st.markdown(
     """
     <style>
-    .block-container { max-width: 1180px; padding-top: 2rem; }
-    .hero { padding: 1.5rem 1.8rem; border-radius: 18px;
+    .block-container { max-width: 960px; padding-top: 1.2rem; }
+    .hero { padding: 1.1rem 1.3rem; border-radius: 14px;
             background: linear-gradient(125deg,#101a35,#173d57 65%,#0e6d68);
-            color: white; margin-bottom: 1rem; }
-    .hero h1 { margin: 0; font-size: 2.4rem; }
-    .hero p { margin: .5rem 0 0; color: #d4eff0; }
-    .stage { padding: .8rem; border: 1px solid #d8e2e8; border-radius: 12px;
-             background: #f8fbfc; min-height: 95px; }
-    .stage b { color: #0e6d68; }
+            color: white; margin-bottom: 1.3rem; }
+    .hero h1 { margin: 0; font-size: 2.1rem; }
+    .hero p { margin: .35rem 0 0; color: #d4eff0; }
     /* Keep Streamlit's app content, but hide its deploy and menu controls. */
     [data-testid="stAppDeployButton"],
     [data-testid="stToolbar"],
@@ -77,19 +74,21 @@ settings = desk.settings
 
 with st.sidebar:
     st.header("Runtime")
-    st.metric("Mode", "LIVE" if settings.live_ready else "NOT READY")
+    st.metric("Status", "LIVE" if settings.live_ready else "NOT READY")
     st.caption(f"Model: `{settings.gemini_model}`")
-    st.caption("Radware key: ✅ set" if settings.radware_api_key else "Radware key: ⚠️ missing")
-    st.caption("Gemini key: ✅ set" if settings.gemini_api_key else "Gemini key: ⚠️ missing")
+    st.caption(
+        "Credentials: Gemini ✅, Radware ✅"
+        if settings.live_ready
+        else "Credentials: one or more keys missing"
+    )
     st.caption(f"Failure policy: `{settings.radware_fail_mode}`")
     if not settings.live_ready:
         st.warning("Add both API keys to .env before running a live test.")
-    st.divider()
-    st.markdown("**Safety note**")
-    st.caption(
-        "shell_exec is a simulator. It records a proposed command but never "
-        "runs a shell command or reads a real secret."
-    )
+    with st.expander("Safety note"):
+        st.caption(
+            "shell_exec is a simulator. It records a proposed command but never "
+            "runs a shell command or reads a real secret."
+        )
 
 st.markdown(
     '<div class="hero"><h1>🛡️ SecureDesk</h1>'
@@ -97,40 +96,27 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-st.subheader("What the security layer sees")
-cols = st.columns(3)
-for col, title, detail in zip(
-    cols,
-    ("1 · Prompt", "2 · Response", "3 · Tool call"),
-    (
-        "Checks the user request and ticket context before Gemini acts.",
-        "Checks the answer before it reaches the user.",
-        "Checks tool name and arguments before execution.",
-    ),
-):
-    with col:
-        st.markdown(f'<div class="stage"><b>{title}</b><br>{detail}</div>', unsafe_allow_html=True)
-
-st.subheader("Run a scenario")
+st.subheader("Run a security test")
 scenario_name = st.selectbox(
     "Choose a scenario",
     tuple(SCENARIOS),
     format_func=lambda key: SCENARIOS[key]["label"],
 )
 scenario = SCENARIOS[scenario_name]
-st.info(scenario["why"])
+st.caption(scenario["why"])
 st.text_area(
     "Prompt sent to SecureDesk",
     value=scenario["request"],
     height=110,
     disabled=True,
 )
-red_team = st.checkbox(
-    "Red-team challenge mode (intentionally asks the agent to follow poisoned ticket instructions)",
-    value=False,
-    disabled=scenario_name != "poisoned-ticket",
-    help="Synthetic only: shell_exec never runs a real command. Use this to demonstrate Radware blocking a tool call.",
-)
+red_team = False
+if scenario_name == "poisoned-ticket":
+    red_team = st.checkbox(
+        "Enable red-team challenge mode",
+        help="Synthetic only: shell_exec never runs a real command. This demonstrates Radware blocking a tool call.",
+    )
+st.caption("Flow: prompt → Gemini → Radware inspection → result")
 
 if "runs" not in st.session_state:
     st.session_state.runs = []
@@ -165,6 +151,7 @@ if st.session_state.get("runs"):
         "can still refuse an unsafe request."
     )
 
+    st.caption("Conversation trace")
     for message in result.messages:
         chat_role = {
             "HumanMessage": "user",
@@ -186,8 +173,4 @@ if st.session_state.get("runs"):
         st.caption("Local tool audit")
         st.dataframe(result.executed_tools, width="stretch", hide_index=True)
 
-st.divider()
-st.caption(
-    "Live evidence requires a real Radware Event ID and the corresponding "
-    "Security Events entry."
-)
+st.caption("Live evidence requires a Radware Event ID and matching Security Events entry.")
